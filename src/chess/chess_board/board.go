@@ -13,7 +13,7 @@ type Board struct {
 	Squares               [8][8]*chess.Square
 }
 
-func (b *Board) createBoard() {
+func (b *Board) ResetBoard() {
 	for i := int32(0); i < 8; i++ {
 		for j := int32(0); j < 8; j++ {
 			var p *chess_pieces.Piece = chess_pieces.NewPiece()
@@ -63,10 +63,6 @@ func (b *Board) createBoard() {
 	}
 }
 
-func (b *Board) ResetBoard() {
-	b.createBoard()
-}
-
 func NewBoard(squareSize int32, lightColor, darkColor rl.Color, xPos, yPos int32) *Board {
 	var b *Board = &Board{}
 	b.squareSize = squareSize
@@ -74,6 +70,6 @@ func NewBoard(squareSize int32, lightColor, darkColor rl.Color, xPos, yPos int32
 	b.darkColor = darkColor
 	b.xPos = xPos
 	b.yPos = yPos
-	b.createBoard()
+	b.ResetBoard()
 	return b
 }
