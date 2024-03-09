@@ -37,6 +37,8 @@ func MainGameLoop() {
 	{
 		rl.ClearBackground(rl.RayWhite)
 		board.DrawBoard()
+		board.CheckMouseClicks()
+		// rl.DrawFPS(15, 15)
 	}
 	rl.EndDrawing()
 }

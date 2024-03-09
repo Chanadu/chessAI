@@ -23,7 +23,16 @@ func (b *Board) drawBoardTiles() {
 				color = b.darkColor
 			}
 
-			rl.DrawRectangle(i*b.squareSize+b.xPos, j*b.squareSize+b.yPos, b.squareSize, b.squareSize, color)
+			var rect rl.Rectangle = rl.NewRectangle(
+				float32(i*b.squareSize+b.xPos),
+				float32(j*b.squareSize+b.yPos),
+				float32(b.squareSize),
+				float32(b.squareSize),
+			)
+
+			b.Squares[i][j].Rect = &rect
+
+			rl.DrawRectangleRec(rect, color)
 			b.drawBoardPiece(i, j)
 		}
 	}
