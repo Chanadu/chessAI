@@ -11,6 +11,7 @@ type Board struct {
 	lightColor, darkColor rl.Color
 	xPos, yPos            int32
 	Squares               [8][8]*chess.Square
+	FirstSquareClicked rl.Vector2
 }
 
 func (b *Board) ResetBoard() {

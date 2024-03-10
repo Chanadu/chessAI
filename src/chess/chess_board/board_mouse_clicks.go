@@ -10,8 +10,10 @@ func (b *Board) CheckMouseClicks() {
 			}
 			var collision bool = rl.CheckCollisionPointRec(rl.GetMousePosition(), *b.Squares[i][j].Rect)
 			if collision {
+				b.FirstSquareClicked = rl.Vector2{float32(i), float32(j)}
 				println(i, " ", j)
 			}
+
 		}
 	}
 }
