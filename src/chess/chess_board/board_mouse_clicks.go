@@ -43,6 +43,11 @@ func (b *Board) squareClicked(i, j int32) {
 		return
 	}
 
+	//CHECKS DONE
+	if !b.CanPieceMoveTo(oldSquare, newSquare) {
+		return
+	}
+
 	if newSquare.Piece.Initalized {
 		b.selectedSquare = [2]int32{-1, -1}
 		if newSquare.Piece.PieceColor != oldSquare.Piece.PieceColor {
