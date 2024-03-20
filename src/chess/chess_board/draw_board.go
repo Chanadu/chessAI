@@ -23,23 +23,40 @@ func (b *Board) drawBoardTiles() {
 				color = b.darkColor
 			}
 
-			var rect rl.Rectangle = rl.NewRectangle(
+			var squareRect rl.Rectangle = rl.NewRectangle(
 				float32(i*b.squareSize+b.xPos),
 				float32(j*b.squareSize+b.yPos),
 				float32(b.squareSize),
 				float32(b.squareSize),
 			)
 
-			b.Squares[i][j].Rect = &rect
+			b.squares[i][j].Rect = &squareRect
 
-			rl.DrawRectangleRec(rect, color)
+			rl.DrawRectangleRec(squareRect, color)
+
+			if b.selectedSquare[0] == i && b.selectedSquare[1] == j {
+				var selectedSquareRect1 rl.Rectangle = rl.NewRectangle(
+					float32(i*b.squareSize+b.xPos),
+					float32(j*b.squareSize+b.yPos),
+					float32(b.squareSize),
+					float32(b.squareSize),
+				)
+				var selectedSquareRect2 rl.Rectangle = rl.NewRectangle(
+					float32(i*b.squareSize+b.xPos+b.squareSelectionInset),
+					float32(j*b.squareSize+b.yPos+b.squareSelectionInset),
+					float32(b.squareSize-b.squareSelectionInset*2),
+					float32(b.squareSize-b.squareSelectionInset*2),
+				)
+				rl.DrawRectangleRec(selectedSquareRect1, b.selectionColor)
+				rl.DrawRectangleRec(selectedSquareRect2, color)
+			}
 			b.drawBoardPiece(i, j)
 		}
 	}
 }
 
 func (b *Board) drawBoardPiece(i, j int32) {
-	if !b.Squares[i][j].Piece.Initalized {
+	if !b.squares[i][j].Piece.Initalized {
 		return
 	}
 	// else {
@@ -47,12 +64,12 @@ func (b *Board) drawBoardPiece(i, j int32) {
 	// return
 	// }
 	var text string = ""
-	if b.Squares[i][j].Piece.PieceColor == chess_pieces.White {
+	if b.squares[i][j].Piece.PieceColor == chess_pieces.White {
 		text += "W"
 	} else {
 		text += "B"
 	}
-	switch t := b.Squares[i][j].Piece.PieceType; t {
+	switch t := b.squares[i][j].Piece.PieceType; t {
 	case chess_pieces.King:
 		text += "K"
 	case chess_pieces.Queen:
