@@ -165,7 +165,7 @@ func (b *Board) canQueenMoveTo(oldSquare, newSquare *chess.Square, initalXPos, i
 		log.Fatal(errors.New("canQueenMoveTo ERROR, NOT QUEEN"))
 		return false
 	}
-	return true
+	return b.canRookMoveTo(oldSquare, newSquare, initalXPos, initalYPos, finalXPos, finalYPos) || b.canBishopMoveTo(oldSquare, newSquare, initalXPos, initalYPos, finalXPos, finalYPos)
 }
 
 func (b *Board) canKingMoveTo(oldSquare, newSquare *chess.Square, initalXPos, initalYPos, finalXPos, finalYPos int32) bool {
