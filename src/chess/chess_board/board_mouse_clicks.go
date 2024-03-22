@@ -55,7 +55,5 @@ func (b *Board) squareClicked(i, j int32) {
 		oldSquare.Piece.Initalized = false
 		b.changeTurnColor()
 		return
-	} else {
-		// println("21")
 	}
 }
