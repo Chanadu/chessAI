@@ -36,32 +36,26 @@ func (b *Board) squareClicked(i, j int32) {
 		return
 	}
 
+	if newSquare.Piece.Initalized && newSquare.Piece.PieceColor == b.currentTurnColor {
+		b.selectedSquare = [2]int32{i, j}
+		return
+	}
+
 	var oldSquare *chess.Square = b.squares[b.selectedSquare[0]][b.selectedSquare[1]]
 
 	if oldSquare.X == i && oldSquare.Y == j {
-		b.selectedSquare = [2]int32{-1, -1}
 		return
 	}
 
-	//CHECKS DONE
-	if !b.CanPieceMoveTo(oldSquare, newSquare) {
-		return
-	}
-
-	if newSquare.Piece.Initalized {
-		b.selectedSquare = [2]int32{-1, -1}
-		if newSquare.Piece.PieceColor != oldSquare.Piece.PieceColor {
-			newSquare.Piece = oldSquare.Piece
-			oldSquare.Piece = chess_pieces.NewPiece()
-			oldSquare.Piece.Initalized = false
-			b.changeTurnColor()
-		}
-	} else {
-		b.selectedSquare = [2]int32{-1, -1}
+	//EARLY CHECKS DONE
+	b.selectedSquare = [2]int32{-1, -1}
+	if b.CanPieceMoveTo(oldSquare, newSquare) {
 		newSquare.Piece = oldSquare.Piece
 		oldSquare.Piece = chess_pieces.NewPiece()
 		oldSquare.Piece.Initalized = false
 		b.changeTurnColor()
+		return
+	} else {
+		// println("21")
 	}
-
 }
