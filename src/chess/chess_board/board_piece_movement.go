@@ -3,6 +3,7 @@ package chess_board
 import (
 	"errors"
 	"log"
+	"math"
 
 	"github.com/Chanadu/chessAI/src/chess"
 	"github.com/Chanadu/chessAI/src/chess/chess_pieces"
@@ -19,7 +20,9 @@ func (b *Board) CanPieceMoveTo(oldSquare, newSquare *chess.Square) bool {
 			return false
 		}
 	}
+
 	var initalXPos, initalYPos, finalXPos, finalYPos int32 = oldSquare.X, oldSquare.Y, newSquare.X, newSquare.Y
+
 	if initalXPos == finalXPos && finalYPos == initalYPos {
 		//println("26")
 		return false
@@ -28,38 +31,38 @@ func (b *Board) CanPieceMoveTo(oldSquare, newSquare *chess.Square) bool {
 	switch oldPiece.PieceType {
 	case chess_pieces.Pawn:
 		//println("PAWN")
-		return b.canPawnMoveTo(oldSquare, newSquare, initalXPos, initalYPos, finalXPos, finalYPos)
+		return b.canPawnMoveTo(initalXPos, initalYPos, finalXPos, finalYPos)
 	case chess_pieces.Bishop:
 		//println("BISHOP")
-		return b.canBishopMoveTo(oldSquare, newSquare, initalXPos, initalYPos, finalXPos, finalYPos)
+		return b.canBishopMoveTo(initalXPos, initalYPos, finalXPos, finalYPos)
 	case chess_pieces.Knight:
 		//println("KNIGHT")
-		return b.canKnightMoveTo(oldSquare, newSquare, initalXPos, initalYPos, finalXPos, finalYPos)
+		return b.canKnightMoveTo(initalXPos, initalYPos, finalXPos, finalYPos)
 	case chess_pieces.Rook:
 		//println("ROOK")
-		return b.canRookMoveTo(oldSquare, newSquare, initalXPos, initalYPos, finalXPos, finalYPos)
+		return b.canRookMoveTo(initalXPos, initalYPos, finalXPos, finalYPos)
 	case chess_pieces.Queen:
 		//println("QUEEN")
-		return b.canQueenMoveTo(oldSquare, newSquare, initalXPos, initalYPos, finalXPos, finalYPos)
+		return b.canQueenMoveTo(initalXPos, initalYPos, finalXPos, finalYPos)
 	case chess_pieces.King:
 		//println("KING")
-		return b.canKingMoveTo(oldSquare, newSquare, initalXPos, initalYPos, finalXPos, finalYPos)
+		return b.canKingMoveTo(initalXPos, initalYPos, finalXPos, finalYPos)
 	}
 	//println("27")
 	log.Fatal(errors.New("CanPieceMoveTo ERROR, NOT IN PIECE LIST"))
 	return false
 }
 
-func (b *Board) canPawnMoveTo(oldSquare, newSquare *chess.Square, initalXPos, initalYPos, finalXPos, finalYPos int32) bool {
-	if oldSquare.Piece.PieceType != chess_pieces.Pawn {
+func (b *Board) canPawnMoveTo(initalXPos, initalYPos, finalXPos, finalYPos int32) bool {
+	if b.squares[initalXPos][initalYPos].Piece.PieceType != chess_pieces.Pawn {
 		log.Fatal(errors.New("canPawnMoveTo ERROR, NOT PAWN"))
 		return false
 	}
 	return true
 }
 
-func (b *Board) canBishopMoveTo(oldSquare, newSquare *chess.Square, initalXPos, initalYPos, finalXPos, finalYPos int32) bool {
-	if oldSquare.Piece.PieceType != chess_pieces.Bishop {
+func (b *Board) canBishopMoveTo(initalXPos, initalYPos, finalXPos, finalYPos int32) bool {
+	if b.squares[initalXPos][initalYPos].Piece.PieceType != chess_pieces.Bishop {
 		log.Fatal(errors.New("canBishopMoveTo ERROR, NOT BISHOP"))
 		return false
 	}
@@ -110,17 +113,24 @@ func (b *Board) canBishopMoveTo(oldSquare, newSquare *chess.Square, initalXPos, 
 	return true
 }
 
-func (b *Board) canKnightMoveTo(oldSquare, newSquare *chess.Square, initalXPos, initalYPos, finalXPos, finalYPos int32) bool {
-	if oldSquare.Piece.PieceType != chess_pieces.Knight {
+func (b *Board) canKnightMoveTo(initalXPos, initalYPos, finalXPos, finalYPos int32) bool {
+	if b.squares[initalXPos][initalYPos].Piece.PieceType != chess_pieces.Knight {
 		log.Fatal(errors.New("canKnightMoveTo ERROR, NOT Knight"))
 		return false
 	}
 
-	return true
+	if math.Abs(float64(finalXPos-initalXPos)) == 1 {
+		return math.Abs(float64(finalYPos-initalYPos)) == 2
+	}
+	if math.Abs(float64(finalXPos-initalXPos)) == 2 {
+		return math.Abs(float64(finalYPos-initalYPos)) == 1
+	} else {
+		return false
+	}
 }
 
-func (b *Board) canRookMoveTo(oldSquare, newSquare *chess.Square, initalXPos, initalYPos, finalXPos, finalYPos int32) bool {
-	if oldSquare.Piece.PieceType != chess_pieces.Rook {
+func (b *Board) canRookMoveTo(initalXPos, initalYPos, finalXPos, finalYPos int32) bool {
+	if b.squares[initalXPos][initalYPos].Piece.PieceType != chess_pieces.Rook {
 		log.Fatal(errors.New("canPawnRookTo ERROR, NOT ROOK"))
 		return false
 	}
@@ -160,18 +170,38 @@ func (b *Board) canRookMoveTo(oldSquare, newSquare *chess.Square, initalXPos, in
 	return true
 }
 
-func (b *Board) canQueenMoveTo(oldSquare, newSquare *chess.Square, initalXPos, initalYPos, finalXPos, finalYPos int32) bool {
-	if oldSquare.Piece.PieceType != chess_pieces.Queen {
+func (b *Board) canQueenMoveTo(initalXPos, initalYPos, finalXPos, finalYPos int32) bool {
+	if b.squares[initalXPos][initalYPos].Piece.PieceType != chess_pieces.Queen {
 		log.Fatal(errors.New("canQueenMoveTo ERROR, NOT QUEEN"))
 		return false
 	}
-	return b.canRookMoveTo(oldSquare, newSquare, initalXPos, initalYPos, finalXPos, finalYPos) || b.canBishopMoveTo(oldSquare, newSquare, initalXPos, initalYPos, finalXPos, finalYPos)
+	return b.canRookMoveTo(initalXPos, initalYPos, finalXPos, finalYPos) || b.canBishopMoveTo(initalXPos, initalYPos, finalXPos, finalYPos)
 }
 
-func (b *Board) canKingMoveTo(oldSquare, newSquare *chess.Square, initalXPos, initalYPos, finalXPos, finalYPos int32) bool {
-	if oldSquare.Piece.PieceType != chess_pieces.King {
+func (b *Board) canKingMoveTo(initalXPos, initalYPos, finalXPos, finalYPos int32) bool {
+	if b.squares[initalXPos][initalYPos].Piece.PieceType != chess_pieces.King {
 		log.Fatal(errors.New("canKingMoveTo ERROR, NOT KING"))
 		return false
 	}
-	return true
+	if math.Abs(float64(finalXPos-initalXPos)) <= 1 && math.Abs(float64(finalYPos-initalYPos)) <= 1 {
+		// OPPOSING KING
+		for i := int32(-1); i <= 1; i++ {
+			for j := int32(-1); j <= 1; j++ {
+				var xPos, yPos int32 = finalXPos + i, finalYPos + j
+				if xPos > 7 || yPos > 7 || xPos < 0 || yPos < 0 || (xPos == initalXPos && yPos == initalXPos) {
+					continue
+				}
+				if b.squares[xPos][yPos].Piece.PieceColor == chess_pieces.Black && b.squares[xPos][yPos].Piece.PieceType == chess_pieces.King {
+					return false
+				}
+			}
+		}
+		if b.squares[initalXPos][initalYPos].Piece.PieceColor == chess_pieces.White {
+			b.canWhiteKingCastle = false
+		}
+		return true
+	} else {
+		// CASTLING
+		return false
+	}
 }

@@ -7,12 +7,13 @@ import (
 )
 
 type Board struct {
-	squareSize, squareSelectionInset      int32
-	lightColor, darkColor, selectionColor rl.Color
-	xPos, yPos                            int32
-	squares                               [8][8]*chess.Square
-	selectedSquare                        [2]int32
-	currentTurnColor                      chess_pieces.PieceColor
+	squareSize, squareSelectionInset       int32
+	lightColor, darkColor, selectionColor  rl.Color
+	xPos, yPos                             int32
+	squares                                [8][8]*chess.Square
+	selectedSquare                         [2]int32
+	currentTurnColor                       chess_pieces.PieceColor
+	canWhiteKingCastle, canBlackKingCastle bool
 }
 
 func (b *Board) ResetBoard() {
@@ -65,7 +66,7 @@ func (b *Board) ResetBoard() {
 	}
 }
 
-func NewBoard(squareSize, squareSelectionInset int32, lightColor, darkColor, selectionColor rl.Color, xPos, yPos int32, turnColor chess_pieces.PieceColor) *Board {
+func NewBoard(squareSize, squareSelectionInset int32, lightColor, darkColor, selectionColor rl.Color, xPos, yPos int32, turnColor chess_pieces.PieceColor, canKingsCastle bool) *Board {
 	var b *Board = &Board{}
 	b.squareSize = squareSize
 	b.squareSelectionInset = squareSelectionInset
@@ -75,6 +76,7 @@ func NewBoard(squareSize, squareSelectionInset int32, lightColor, darkColor, sel
 	b.xPos = xPos
 	b.yPos = yPos
 	b.currentTurnColor = turnColor
+	b.canWhiteKingCastle, b.canBlackKingCastle = canKingsCastle, canKingsCastle
 
 	b.selectedSquare = [2]int32{-1, -1}
 	b.ResetBoard()

@@ -49,11 +49,16 @@ func (b *Board) squareClicked(i, j int32) {
 
 	//EARLY CHECKS DONE
 	b.selectedSquare = [2]int32{-1, -1}
+	var _ bool = b.movePiece(oldSquare, newSquare)
+}
+
+func (b *Board) movePiece(oldSquare, newSquare *chess.Square) bool {
 	if b.CanPieceMoveTo(oldSquare, newSquare) {
 		newSquare.Piece = oldSquare.Piece
 		oldSquare.Piece = chess_pieces.NewPiece()
 		oldSquare.Piece.Initalized = false
 		b.changeTurnColor()
-		return
+		return true
 	}
+	return false
 }
