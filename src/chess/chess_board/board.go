@@ -7,13 +7,13 @@ import (
 )
 
 type Board struct {
-	squareSize, squareSelectionInset       int32
-	lightColor, darkColor, selectionColor  rl.Color
-	xPos, yPos                             int32
-	squares                                [8][8]*chess.Square
-	selectedSquare                         [2]int32
-	currentTurnColor                       chess_pieces.PieceColor
-	canWhiteKingCastle, canBlackKingCastle bool
+	squareSize, squareSelectionInset                                                                 int32
+	lightColor, darkColor, selectionColor                                                            rl.Color
+	xPos, yPos                                                                                       int32
+	squares                                                                                          [8][8]*chess.Square
+	selectedSquare                                                                                   [2]int32
+	currentTurnColor                                                                                 chess_pieces.PieceColor
+	canWhiteKingCastleLeft, canWhiteKingCastleRight, canBlackKingCastleLeft, canBlackKingCastleRight bool
 }
 
 func (b *Board) ResetBoard() {
@@ -57,10 +57,15 @@ func (b *Board) ResetBoard() {
 			} else {
 				p.PieceType = chess_pieces.Pawn
 			}
+
+			var op *chess_pieces.Piece = chess_pieces.NewPiece()
+			op.Initalized = false
+
 			b.squares[i][j] = &chess.Square{
-				X:     i,
-				Y:     j,
-				Piece: p,
+				X:        i,
+				Y:        j,
+				Piece:    p,
+				OldPiece: op,
 			}
 		}
 	}
@@ -76,7 +81,7 @@ func NewBoard(squareSize, squareSelectionInset int32, lightColor, darkColor, sel
 	b.yPos = yPos
 	b.xPos = xPos
 	b.currentTurnColor = turnColor
-	b.canWhiteKingCastle, b.canBlackKingCastle = canKingsCastle, canKingsCastle
+	b.canWhiteKingCastleLeft, b.canWhiteKingCastleRight, b.canBlackKingCastleLeft, b.canBlackKingCastleRight = canKingsCastle, canKingsCastle, canKingsCastle, canKingsCastle
 
 	b.selectedSquare = [2]int32{-1, -1}
 	b.ResetBoard()

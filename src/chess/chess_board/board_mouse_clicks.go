@@ -2,7 +2,6 @@ package chess_board
 
 import (
 	"github.com/Chanadu/chessAI/src/chess"
-	"github.com/Chanadu/chessAI/src/chess/chess_pieces"
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
@@ -50,15 +49,4 @@ func (b *Board) squareClicked(i, j int32) {
 	//EARLY CHECKS DONE
 	b.selectedSquare = [2]int32{-1, -1}
 	var _ bool = b.movePiece(oldSquare, newSquare)
-}
-
-func (b *Board) movePiece(oldSquare, newSquare *chess.Square) bool {
-	if b.CanPieceMoveTo(oldSquare, newSquare) {
-		newSquare.Piece = oldSquare.Piece
-		oldSquare.Piece = chess_pieces.NewPiece()
-		oldSquare.Piece.Initalized = false
-		b.changeTurnColor()
-		return true
-	}
-	return false
 }

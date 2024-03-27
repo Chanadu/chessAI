@@ -6,7 +6,7 @@ import (
 )
 
 type Square struct {
-	X, Y  int32
-	Piece *chess_pieces.Piece
-	Rect  *rl.Rectangle
+	X, Y            int32
+	Piece, OldPiece *chess_pieces.Piece
+	Rect            *rl.Rectangle
 }
