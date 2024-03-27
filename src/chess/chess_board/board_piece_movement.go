@@ -58,7 +58,25 @@ func (b *Board) canPawnMoveTo(initalXPos, initalYPos, finalXPos, finalYPos int32
 		log.Fatal(errors.New("canPawnMoveTo ERROR, NOT PAWN"))
 		return false
 	}
-	return true
+	if initalXPos == finalXPos {
+		if b.squares[initalXPos][initalYPos].Piece.PieceColor == chess_pieces.White {
+			if initalYPos == 7 && finalYPos == 5 {
+				return true
+			} else if finalYPos+1 == initalYPos {
+				return true
+			}
+		} else {
+			if initalYPos == 1 && finalYPos == 3 {
+				return true
+			} else if finalYPos-1 == initalYPos {
+				return true
+			}
+		}
+	} else {
+		//En Passant
+	}
+
+	return false
 }
 
 func (b *Board) canBishopMoveTo(initalXPos, initalYPos, finalXPos, finalYPos int32) bool {

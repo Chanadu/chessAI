@@ -73,8 +73,8 @@ func NewBoard(squareSize, squareSelectionInset int32, lightColor, darkColor, sel
 	b.lightColor = lightColor
 	b.darkColor = darkColor
 	b.selectionColor = selectionColor
-	b.xPos = xPos
 	b.yPos = yPos
+	b.xPos = xPos
 	b.currentTurnColor = turnColor
 	b.canWhiteKingCastle, b.canBlackKingCastle = canKingsCastle, canKingsCastle
 
