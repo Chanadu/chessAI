@@ -58,22 +58,22 @@ func (b *Board) canPieceSee(initalXPos, initalYPos, finalXPos, finalYPos int32) 
 	// println(oldPiece.PieceType)
 	switch oldPiece.PieceType {
 	case chess_pieces.Pawn:
-		//println("PAWN")
+		// println("PAWN")
 		return b.canPawnMoveTo(initalXPos, initalYPos, finalXPos, finalYPos)
 	case chess_pieces.Bishop:
-		//println("BISHOP")
+		// println("BISHOP")
 		return b.canBishopMoveTo(initalXPos, initalYPos, finalXPos, finalYPos, false)
 	case chess_pieces.Knight:
-		//println("KNIGHT")
+		// println("KNIGHT")
 		return b.canKnightMoveTo(initalXPos, initalYPos, finalXPos, finalYPos)
 	case chess_pieces.Rook:
-		//println("ROOK")
+		// println("ROOK")
 		return b.canRookMoveTo(initalXPos, initalYPos, finalXPos, finalYPos, false)
 	case chess_pieces.Queen:
-		//println("QUEEN")
+		// println("QUEEN")
 		return b.canQueenMoveTo(initalXPos, initalYPos, finalXPos, finalYPos)
 	case chess_pieces.King:
-		//println("KING")
+		// println("KING")
 		return b.canKingMoveTo(initalXPos, initalYPos, finalXPos, finalYPos)
 	}
 	//println("27")
@@ -334,14 +334,22 @@ func (b *Board) canKingMoveTo(initalXPos, initalYPos, finalXPos, finalYPos int32
 }
 
 func (b *Board) movePiece(oldSquare, newSquare *chess.Square) bool {
+
 	if b.CanPieceMoveTo(oldSquare, newSquare) {
 		b.forceMovePiece(oldSquare, newSquare)
+		if b.currentTurnColor == chess_pieces.White &&
+			b.isKingInCheck(b.findPiecePosition(chess_pieces.King, chess_pieces.White)[0], chess_pieces.White) {
 
-		var whiteKing []int32 = b.findPiecePosition(chess_pieces.King, chess_pieces.White)[0]
-		println("white", b.isKingInCheck(whiteKing[0], whiteKing[1]))
-		var blackKing []int32 = b.findPiecePosition(chess_pieces.King, chess_pieces.Black)[0]
-		println("black", b.isKingInCheck(blackKing[0], blackKing[1]))
-
+			println("WHITE CHECK")
+			b.forceMovePiece(newSquare, oldSquare)
+			return false
+		}
+		if b.currentTurnColor == chess_pieces.Black &&
+			b.isKingInCheck(b.findPiecePosition(chess_pieces.King, chess_pieces.Black)[0], chess_pieces.Black) {
+			b.forceMovePiece(newSquare, oldSquare)
+			println("BLACK CHECK")
+			return false
+		}
 		b.changeTurnColor()
 		return true
 	}
@@ -352,7 +360,7 @@ func (b *Board) findPiecePosition(pType chess_pieces.PieceType, pColor chess_pie
 	var foundPositions [][]int32 = make([][]int32, 0)
 	for i := int32(0); i < 8; i++ {
 		for j := int32(0); j < 8; j++ {
-			if b.squares[i][j].Piece.PieceType == pType && b.squares[i][j].Piece.PieceColor == pColor {
+			if b.squares[i][j].Piece.Initalized && b.squares[i][j].Piece.PieceType == pType && b.squares[i][j].Piece.PieceColor == pColor {
 				foundPositions = append(foundPositions, []int32{i, j})
 			}
 		}
@@ -382,20 +390,18 @@ func (b *Board) forceMovePiece(oldSquare, newSquare *chess.Square) {
 	oldSquare.Piece.Initalized = false
 }
 
-func (b *Board) isKingInCheck(kingXPos, kingYPos int32) bool {
+func (b *Board) isKingInCheck(kingPos []int32, color chess_pieces.PieceColor) bool {
 	for i := int32(0); i < 8; i++ {
 		for j := int32(0); j < 8; j++ {
-			if i == kingXPos && j == kingYPos {
+			if i == kingPos[0] && j == kingPos[1] {
 				continue
 			}
-			if b.squares[i][j].Piece.Initalized {
-				if b.squares[kingXPos][kingYPos].Piece.PieceColor == b.squares[i][j].Piece.PieceColor {
-					continue
+			if b.squares[i][j].Piece.Initalized && b.squares[i][j].Piece.PieceColor != color {
+				if b.canPieceSee(i, j, kingPos[0], kingPos[1]) {
+					println(i, j, kingPos[0], kingPos[1])
+					println("!!!!!!!!!!!!!")
+					return true
 				}
-			}
-			if b.canPieceSee(i, j, kingXPos, kingYPos) {
-				println("!!!!!!!!!!!!!")
-				return true
 			}
 		}
 	}
