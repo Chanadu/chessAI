@@ -1,6 +1,8 @@
 package chess_board
 
 import (
+	"os"
+
 	"github.com/Chanadu/chessAI/src/chess/chess_pieces"
 	"github.com/Chanadu/chessAI/src/extras"
 	rl "github.com/gen2brain/raylib-go/raylib"
@@ -63,28 +65,26 @@ func (b *Board) drawBoardPiece(i, j int32) {
 	// rl.DrawText("K", i*b.squareSize+b.xPos, j*b.squareSize+b.yPos, 36, rl.Black)
 	// return
 	// }
-	var text string = ""
-	if b.squares[i][j].Piece.PieceColor == chess_pieces.White {
-		text += "W"
-	} else {
-		text += "B"
+	var index int32 = -1
+	if b.squares[i][j].Piece.PieceColor == chess_pieces.Black {
+		index += 6
 	}
 	switch t := b.squares[i][j].Piece.PieceType; t {
 	case chess_pieces.King:
-		text += "K"
+		index += 1
 	case chess_pieces.Queen:
-		text += "Q"
+		index += 2
 	case chess_pieces.Rook:
-		text += "R"
+		index += 3
 	case chess_pieces.Bishop:
-		text += "B"
+		index += 4
 	case chess_pieces.Knight:
-		text += "N"
+		index += 5
 	case chess_pieces.Pawn:
-		text += "P"
+		index += 6
 	}
-	rl.DrawText(text, i*b.squareSize+b.xPos+b.squareSize/4, j*b.squareSize+b.yPos+b.squareSize/4, 36, rl.Black)
-
+	// rl.DrawText(text, i*b.squareSize+b.xPos+b.squareSize/4, j*b.squareSize+b.yPos+b.squareSize/4, 36, rl.Black)
+	rl.DrawTexture(*PieceTextures[index], i*b.squareSize, j*b.squareSize-b.squareSize/64, rl.White)
 }
 
 func (b *Board) drawBoardMarkings() {
@@ -101,4 +101,29 @@ func (b *Board) drawBoardMarkings() {
 		rl.DrawText(extras.FormatInt32ToString(8-i), 8+b.xPos, i*b.squareSize+8+b.yPos, 24, color2)
 		rl.DrawText(int32ToLetters[i], (i+1)*b.squareSize-24+b.xPos, b.squareSize*8-24+b.yPos, 24, color1)
 	}
+}
+
+func (b *Board) LoadPieceImages() {
+	b.loadPieceImage(0, "/assets/wk.png")
+	b.loadPieceImage(1, "/assets/wq.png")
+	b.loadPieceImage(2, "/assets/wr.png")
+	b.loadPieceImage(3, "/assets/wb.png")
+	b.loadPieceImage(4, "/assets/wn.png")
+	b.loadPieceImage(5, "/assets/wp.png")
+	b.loadPieceImage(6, "/assets/bk.png")
+	b.loadPieceImage(7, "/assets/bq.png")
+	b.loadPieceImage(8, "/assets/br.png")
+	b.loadPieceImage(9, "/assets/bb.png")
+	b.loadPieceImage(10, "/assets/bn.png")
+	b.loadPieceImage(11, "/assets/bp.png")
+
+}
+
+func (b *Board) loadPieceImage(index int32, filePath string) {
+	path, _ := os.Getwd()
+	var tempImage *rl.Image = rl.LoadImage(path + filePath)
+	rl.ImageResize(tempImage, b.squareSize, b.squareSize)
+	var pieceTextureBB rl.Texture2D = rl.LoadTextureFromImage(tempImage)
+	rl.UnloadImage(tempImage)
+	PieceTextures[index] = &pieceTextureBB
 }

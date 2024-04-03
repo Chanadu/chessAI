@@ -33,6 +33,7 @@ func RaylibCloseWindow() {
 
 func PreLoop() {
 	board = chess_board.NewBoard(squareSize, squareSelectionInset, lightBoardColor, darkBoardColor, selectionBoardColor, 0, 0, chess_pieces.White, true)
+	board.LoadPieceImages()
 }
 
 func MainGameLoop() {

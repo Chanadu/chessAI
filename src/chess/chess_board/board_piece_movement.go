@@ -122,8 +122,19 @@ func (b *Board) canPawnMoveTo(initalXPos, initalYPos, finalXPos, finalYPos int32
 			b.squares[finalXPos][initalYPos].Piece.PieceType == chess_pieces.Pawn &&
 			b.squares[finalXPos][initalYPos].Piece.PieceColor != b.squares[initalXPos][initalYPos].Piece.PieceColor &&
 			b.squares[finalXPos][1].OldPiece.PieceType == chess_pieces.Pawn {
+
+			var tempPiece chess_pieces.Piece = *b.squares[finalXPos][initalYPos].Piece
 			b.squares[finalXPos][initalYPos].Piece = chess_pieces.NewPiece()
 			b.squares[finalXPos][initalYPos].Piece.Initalized = false
+			b.forceMovePiece(b.squares[initalXPos][initalYPos], b.squares[finalXPos][finalYPos])
+
+			if b.isKingInCheck(b.findPiecePosition(chess_pieces.King, chess_pieces.White)[0], chess_pieces.White) {
+
+				b.squares[finalXPos][initalYPos].Piece = &tempPiece
+				b.forceMovePiece(b.squares[finalXPos][finalYPos], b.squares[initalXPos][initalYPos])
+				return false
+			}
+			b.forceMovePiece(b.squares[finalXPos][finalYPos], b.squares[initalXPos][initalYPos])
 			return true
 		}
 		if initalYPos == 4 &&
@@ -132,8 +143,17 @@ func (b *Board) canPawnMoveTo(initalXPos, initalYPos, finalXPos, finalYPos int32
 			b.squares[finalXPos][initalYPos].Piece.PieceColor != b.squares[initalXPos][initalYPos].Piece.PieceColor &&
 			b.squares[finalXPos][6].OldPiece.PieceType == chess_pieces.Pawn {
 
+			var tempPiece chess_pieces.Piece = *b.squares[finalXPos][initalYPos].Piece
 			b.squares[finalXPos][initalYPos].Piece = chess_pieces.NewPiece()
 			b.squares[finalXPos][initalYPos].Piece.Initalized = false
+			b.forceMovePiece(b.squares[initalXPos][initalYPos], b.squares[finalXPos][finalYPos])
+
+			if b.isKingInCheck(b.findPiecePosition(chess_pieces.King, chess_pieces.White)[0], chess_pieces.Black) {
+				b.squares[finalXPos][initalYPos].Piece = &tempPiece
+				b.forceMovePiece(b.squares[finalXPos][finalYPos], b.squares[initalXPos][initalYPos])
+				return false
+			}
+			b.forceMovePiece(b.squares[finalXPos][finalYPos], b.squares[initalXPos][initalYPos])
 			return true
 		}
 	}
@@ -300,7 +320,9 @@ func (b *Board) canKingMoveTo(initalXPos, initalYPos, finalXPos, finalYPos int32
 			if (finalXPos-initalXPos == 2) &&
 				b.canWhiteKingCastleRight &&
 				!b.squares[initalXPos+1][7].Piece.Initalized &&
-				!b.squares[initalXPos+2][7].Piece.Initalized {
+				!b.squares[initalXPos+2][7].Piece.Initalized &&
+				!b.isKingInCheck([]int32{5, 7}, chess_pieces.White) &&
+				!b.isKingInCheck([]int32{6, 7}, chess_pieces.White) {
 				//Castle Right (Move Rook)
 				b.forceMovePiece(b.squares[7][7], b.squares[5][7])
 				return true
@@ -308,7 +330,9 @@ func (b *Board) canKingMoveTo(initalXPos, initalYPos, finalXPos, finalYPos int32
 				b.canWhiteKingCastleLeft &&
 				!b.squares[initalXPos-1][7].Piece.Initalized &&
 				!b.squares[initalXPos-2][7].Piece.Initalized &&
-				!b.squares[initalXPos-3][7].Piece.Initalized {
+				!b.squares[initalXPos-3][7].Piece.Initalized &&
+				!b.isKingInCheck([]int32{3, 7}, chess_pieces.White) &&
+				!b.isKingInCheck([]int32{4, 7}, chess_pieces.White) {
 				//Castle Left (Move Rook)
 				b.forceMovePiece(b.squares[0][7], b.squares[3][7])
 				return true
@@ -316,14 +340,18 @@ func (b *Board) canKingMoveTo(initalXPos, initalYPos, finalXPos, finalYPos int32
 		} else if initalYPos == 0 && b.squares[initalXPos][initalYPos].Piece.PieceColor == chess_pieces.Black {
 			if (finalXPos-initalXPos == 2) && b.canBlackKingCastleRight &&
 				!b.squares[initalXPos+1][0].Piece.Initalized &&
-				!b.squares[initalXPos+2][0].Piece.Initalized {
+				!b.squares[initalXPos+2][0].Piece.Initalized &&
+				!b.isKingInCheck([]int32{5, 0}, chess_pieces.White) &&
+				!b.isKingInCheck([]int32{6, 0}, chess_pieces.White) {
 				//Castle Right (Move Rook)
 				b.forceMovePiece(b.squares[7][0], b.squares[5][0])
 				return true
 			} else if (initalXPos-finalXPos == 3) && b.canBlackKingCastleLeft &&
 				!b.squares[initalXPos-1][0].Piece.Initalized &&
 				!b.squares[initalXPos-2][0].Piece.Initalized &&
-				!b.squares[initalXPos-3][0].Piece.Initalized {
+				!b.squares[initalXPos-3][0].Piece.Initalized &&
+				!b.isKingInCheck([]int32{3, 0}, chess_pieces.White) &&
+				!b.isKingInCheck([]int32{4, 0}, chess_pieces.White) {
 				//Castle Left (Move Rook)
 				b.forceMovePiece(b.squares[0][0], b.squares[3][0])
 				return true

@@ -16,6 +16,8 @@ type Board struct {
 	canWhiteKingCastleLeft, canWhiteKingCastleRight, canBlackKingCastleLeft, canBlackKingCastleRight bool
 }
 
+var PieceTextures [12]*rl.Texture2D
+
 func (b *Board) ResetBoard() {
 	for i := int32(0); i < 8; i++ {
 		for j := int32(0); j < 8; j++ {
